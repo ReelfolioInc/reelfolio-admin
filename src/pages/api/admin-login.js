@@ -22,8 +22,15 @@ export default async function handler(req, res) {
             return;
         }
 
-    accessToken = await generateAccessToken(user._id,'admin');
-    res.status(200).json({status: true,accessToken: accessToken});
+        console.log(user);
+
+        if(!user.securityRoles.includes("admin")){
+            res.status(401).json({message: "Not Admin"});
+            return;
+        }else{
+            accessToken = await generateAccessToken(user._id,'admin');
+            res.status(200).json({status: true,accessToken: accessToken});
+        }
 
   }else {
       res.status(405).json({message: "Method Not Allowed"});

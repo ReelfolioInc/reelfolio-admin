@@ -13,6 +13,7 @@ import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Divider from "@material-ui/core/Divider";
 import Box from "@material-ui/core/Box";
+import {useRouter} from "next/router";
 
 
 
@@ -34,44 +35,58 @@ async function getStaticProps() {
 
 function Home() {
 
-
+  let router = useRouter();
   let [users, setUsers] = useState([]);
   let [currentSection,setCurrentSection] = useState(0);
+  let [accessToken,setAccessToken] = useState(null);
 
+
+  useEffect(() => {
+      let accessToken = window.localStorage.getItem("reelfolioToken");
+      if(accessToken){
+          setAccessToken(window.localStorage.getItem("reelfolioToken"));
+      }else{
+          router.push("/login");
+      }
+  },[]);
+
+  useEffect(async () => {
+
+      if(accessToken){
+           if(currentSection === 0) {
+               let users = await getAllUsers();
+                setUsers(users);
+          }else if(currentSection === 1){
+               let users = await getPendingApprovalUsers();
+               setUsers(users);
+          }else if(currentSection === 2){}
+      }
+
+  },[currentSection,accessToken]);
 
 
   const getAllUsers = async () => {
         let users = await fetch("/api/get-users",{
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "accessToken": accessToken
                 }
             }).then(res => res.json());
-        return users;
+        return users.users ?? [];
   };
 
   const getPendingApprovalUsers = async () => {
         let users = await fetch("/api/get-users?isApproved=false&isRejected=false",{
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "accessToken": accessToken
                 }
             }).then(res => res.json());
-        return users;
+        return users.users ?? [];
   };
 
 
-  useEffect(async () => {
 
-      if(currentSection === 0) {
-           let users = await getAllUsers();
-            setUsers(users);
-      }else if(currentSection === 1){
-           let users = await getPendingApprovalUsers();
-           setUsers(users);
-      }else if(currentSection === 2){
-
-      }
-
-  },[currentSection]);
 
   const onSectionChangeHandler = (value) => {
       setCurrentSection(value);
@@ -80,7 +95,8 @@ function Home() {
   const approveUser = async (userId) => {
       let acceptRes = await fetch(`/api/approve-user?userId=${userId}`,{
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "accessToken": accessToken
             }
         }).then(res => res.json());
 
@@ -98,7 +114,8 @@ function Home() {
   const rejectUser = async (userId) => {
       let rejectRes = await fetch(`/api/reject-user?userId=${userId}`,{
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "accessToken": accessToken
             }
         }).then(res => res.json());
 
@@ -114,7 +131,8 @@ function Home() {
    const deleteUser = async (userId) => {
       let deleteRes = await fetch(`/api/delete-user?userId=${userId}`,{
             headers: {
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
+                "accessToken": accessToken
             }
         }).then(res => res.json());
 

@@ -1,8 +1,24 @@
+import {decodeAccessToken} from "../../lib/jwt";
+
 const User = require("./../../lib/mongoose/models/user");
 const initializeMongoose = require("./../../lib/mongoose");
 export default async function handler(req, res) {
   await initializeMongoose();
   let {isApproved,isRejected} = req.query;
+
+  let accessToken = req.headers.accesstoken;
+
+  try{
+       let decoded = await decodeAccessToken(accessToken);
+         if(decoded.data.role !== "admin"){
+           res.status(401).json({message: "Permission Denied"});
+        return;
+       }
+  }catch (e) {
+      res.status(401).json({message: "Permission Denied"});
+      return;
+  }
+
 
   let userQuery = User.find().sort({"createdAt": -1});
 
@@ -21,5 +37,5 @@ export default async function handler(req, res) {
   }
 
   let users = await userQuery.exec();
-  res.status(200).json(users);
+  res.status(200).json({users});
 }

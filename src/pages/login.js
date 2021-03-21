@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Container from "@material-ui/core/Container";
 import Typography from "@material-ui/core/Typography";
 import Input from "@material-ui/core/Input";
@@ -13,6 +13,12 @@ function LoginPage() {
     const router = useRouter();
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
+    let [accessToken,setAccessToken] = useState(null);
+
+
+      useEffect(() => {
+         setAccessToken(window.localStorage.getItem("reelfolioToken"));
+      },[])
 
 
     const emailOnChange = (e) => {
@@ -25,7 +31,7 @@ function LoginPage() {
 
     const login = async () => {
         try{
-             const loginResponse = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`,{
+             const loginResponse = await fetch(`/api/admin-login`,{
                 method: "POST",
                 body: JSON.stringify({
                     email,
@@ -36,9 +42,14 @@ function LoginPage() {
                 }
             }).then(res => res.json());
 
+             if(loginResponse.accessToken){
+                 window.localStorage.setItem("reelfolioToken",loginResponse.accessToken);
+                 router.push("/");
+             }else{
+                 console.error("Invalid Credentials");
+             }
+
             // Set access token in local storage
-            localStorage.setItem("reelfolioAccessToken",loginResponse.accessToken)
-            router.push("/");
         }catch (e) {
             console.error("Unable to login")
         }
