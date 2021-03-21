@@ -1,0 +1,43 @@
+.login-page {
+  height: 100vh;
+  padding-top: 64px;
+  display: flex;
+  flex-direction: column;
+
+   @media only screen and (min-width: 600px) {
+       padding-top: 80px;
+   }
+
+   @media only screen and (min-width: 960px) {
+      padding-top: 140px;
+   }
+
+  .login-content{
+    padding-bottom: 48px;
+  }
+
+  .login-bottom{
+    border-top: 1px solid #EBEBEB;
+    padding: 24px;
+    margin-top: auto;
+  }
+
+  .login-form {
+    display: flex;
+    flex-direction: column;
+    max-width: 420px;
+    margin: auto;
+    width: 100%;
+
+    .fields-container {
+      margin: 48px 0 24px 0;
+    }
+  }
+
+  .input-field {
+    margin-top: 32px;
+    margin-bottom: 32px;
+  }
+
+
+}

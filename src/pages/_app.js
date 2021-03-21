@@ -10,6 +10,9 @@ import { ApolloProvider } from "@apollo/client";
 import { useApollo } from "../lib/apolloClient";
 import DefaultLayout from "../components/layouts/DefaultLayout";
 
+import "./../styles/home-page.scss";
+import "./../styles/login-page.scss";
+
 
 function MyApp(props) {
   const { Component, pageProps } = props;

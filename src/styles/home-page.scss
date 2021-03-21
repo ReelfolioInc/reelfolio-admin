@@ -1,0 +1,26 @@
+.home-page {
+  display: flex;
+  .app-bar {
+    z-index: 1301;
+  }
+  .drawer {
+      width: 320px;
+      flex-shrink: 0
+  }
+  .drawer-paper {
+    width: 320px;
+  }
+  .drawer-container {
+    overflow: auto;
+  }
+  .content{
+    flex-grow: 1;
+    overflow-x: hidden;
+    padding-top: 64px;
+  }
+
+  .content-inner {
+    padding: 16px;
+  }
+
+}
